@@ -1,37 +1,119 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        // ============================================
+        // 1. Run Flask App (Development Mode)
+        // ============================================
         {
-            "name": "Python Debugger: Current File",
+            "name": "Python: Flask App",
             "type": "debugpy",
             "request": "launch",
-            "program": "${file}",
+            "module": "flask",
+            "env": {
+                "FLASK_APP": "app.main:app",
+                "FLASK_ENV": "development",
+                "FLASK_DEBUG": "1"
+            },
+            "args": [
+                "run",
+                "--no-debugger",
+                "--no-reload",
+                "--port",
+                "5000"
+            ],
+            "jinja": true,
+            "justMyCode": true,
             "console": "integratedTerminal"
         },
+        // ============================================
+        // 2. Run Flask App (Alternative: Direct Module)
+        // ============================================
         {
-            "name": "Python Debugger: Current File with Arguments",
+            "name": "Python: Run app.main",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/app/main.py",
+            "args": [],
+            "jinja": true,
+            "justMyCode": true,
+            "console": "integratedTerminal"
+        },
+        // ============================================
+        // 3. Run Tests with Debugging
+        // ============================================
+        {
+            "name": "Python: Debug Tests",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "-v",
+                "--no-cov",
+                "${file}"
+            ],
+            "jinja": true,
+            "justMyCode": true,
+            "console": "integratedTerminal"
+        },
+        // ============================================
+        // 4. Run Single Test File
+        // ============================================
+        {
+            "name": "Python: Debug Current Test File",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "-v",
+                "--no-cov",
+                "${file}"
+            ],
+            "jinja": true,
+            "justMyCode": true,
+            "console": "integratedTerminal"
+        },
+        // ============================================
+        // 5. Attach to Running Process (Advanced)
+        // ============================================
+        {
+            "name": "Python: Attach to Flask",
+            "type": "debugpy",
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 5678
+            },
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "/app"
+                }
+            ],
+            "justMyCode": true
+        },
+        // ============================================
+        // 6. Run Any Python Script
+        // ============================================
+        {
+            "name": "Python: Current File",
             "type": "debugpy",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": "${command:pickArgs}"
-        },
+            "justMyCode": true
+        }
+    ],
+    // ============================================
+    // 7. Compound Configurations (Run Multiple)
+    // ============================================
+    "compounds": [
         {
-            "name": "PyTest with Arguments",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "pytest",
-            "args": "${command:pickArgs}"
-        },
-        {
-            "name": "PyTest: Current File's Folder Name",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "pytest",
-            "args": "${relativeFileDirname}"
+            "name": "Flask + Tests",
+            "configurations": [
+                "Python: Flask App",
+                "Python: Debug Tests"
+            ],
+            "preLaunchTask": null
         }
     ]
 }

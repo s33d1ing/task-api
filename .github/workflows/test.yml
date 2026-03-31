@@ -27,7 +27,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: $${{ runner.os }}-pip-$${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
@@ -41,10 +41,12 @@ jobs:
       - name: Run Linting (Optional but recommended)
         run: |
           python -m pip install flake8 black
-          # Check syntax
+          # Stop the build if there are Python syntax errors or undefined names
           flake8 app tests --count --select=E9,F63,F7,F82 --show-source --statistics
+          # Exit-zero treats all errors as warnings
+          flake8 app tests --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
           # Check formatting (optional)
-          # black --check app tests
+          black --check app tests
 
       - name: Run tests with coverage
         run: |
@@ -53,8 +55,7 @@ jobs:
 
       - name: Verify Coverage Files Exist
         run: |
-          ls -la coverage.xml 2>/dev/null || echo "coverage.xml not found"
-          ls -la htmlcov/ 2>/dev/null || echo "htmlcov/ not found"
+          ls -lA -h coverage.xml htmlcov/
 
       # - name: Upload coverage to Codecov
       #   uses: codecov/codecov-action@v4
@@ -69,7 +70,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()  # Upload even if tests fail
         with:
-          name: coverage-$${{ matrix.python-version }}-$${{ github.sha }}
+          name: coverage-${{ matrix.python-version }}
           path: |
             coverage.xml
             htmlcov/

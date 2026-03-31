@@ -1,26 +1,99 @@
 [build-system]
+# Defines how to build/install the package
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
+# Core metadata
 name = "task-api"
 version = "0.1.0"
-description = "A simple task API with pytest integration"
+description = "A modular Flask API for task management with pytest integration"
+readme = "README.md"
+license = {text = "MIT"}
 requires-python = ">=3.9"
+authors = [
+    {name = "Garrett Dees", email = "garrettdees@gmail.com"}
+]
+keywords = ["flask", "api", "pytest", "testing"]
+
+# Production dependencies
 dependencies = [
     "flask>=3.0.0",
 ]
 
+# Development dependencies (used for testing, linting, etc.)
 [project.optional-dependencies]
 dev = [
     "pytest>=7.4.0",
     "pytest-cov>=4.1.0",
+    "flake8>=6.1.0",
+    "black>=23.0.0",
+    "isort>=8.0.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.5.0",
 ]
 
+[project.urls]
+Homepage = "https://github.com/s33d1ing/task-api"
+Issues = "https://github.com/s33d1ing/task-api/issues"
+
+# --- Tool Configuration ---
+
 [tool.pytest.ini_options]
+# Where to look for tests
 testpaths = ["tests"]
-addopts = "--cov=app --cov-report=html --cov-report=xml --cov-report=term-missing -v"
+# Default arguments passed to pytest
+addopts = [
+    "--cov=app",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+    "-v",
+]
+# Filter warnings to keep output clean
+filterwarnings = [
+    "ignore::DeprecationWarning"
+]
 
 [tool.coverage.run]
+# Which source files to measure
 source = ["app"]
-omit = ["tests/*", "*/migrations/*"]
+# Files to ignore (tests, migrations, etc.)
+omit = [
+    "tests/*",
+    "*/__pycache__/*",
+    "*/migrations/*",
+]
+
+[tool.coverage.report]
+# Fail if coverage drops below this %
+fail_under = 80
+# Show missing lines in the terminal
+show_missing = true
+# Exclude lines that are hard to test (e.g., __main__, abstract methods)
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[tool.black]
+# Black formatter configuration
+line-length = 88
+target-version = ['py39', 'py310', 'py311']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.mypy]
+# MyPy static type checker configuration
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true

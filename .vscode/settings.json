@@ -1,0 +1,40 @@
+{
+    // --- Python Interpreter ---
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+    // If you don't use a venv, remove the line above and let VS Code auto-detect
+
+    // --- Formatting (Black) ---
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "black-formatter.args": ["--config", "pyproject.toml"],
+
+    // --- Import Sorting (isort) ---
+    "python.sortImports.args": ["--settings-path", "pyproject.toml"],
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+    },
+
+    // --- Linting (Flake8) ---
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--config=pyproject.toml"
+    ],
+    "python.linting.lintOnSave": true,
+    "python.linting.lintOnType": true,
+
+    // --- Type Checking (Mypy) ---
+    "python.analysis.typeCheckingMode": "basic", // Or "strict" if you want Pylance to be strict
+    "python.linting.mypyEnabled": true,
+    "python.linting.mypyArgs": [
+        "--config-file=pyproject.toml"
+    ],
+
+    // --- General Editor Settings ---
+    "editor.rulers": [88], // Visual ruler at 88 chars (Black limit)
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.autoSave": "onFocusChange", // Auto-save when you switch windows
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true
+}
