@@ -49,7 +49,12 @@ jobs:
       - name: Run tests with coverage
         run: |
           # The pyproject.toml handles the --cov flags, but we can override if needed
-          pytest --cov=app --cov-report=xml --cov-report=term-missing
+          pytest --cov=app --cov-report=html --cov-report=xml --cov-report=term-missing -v
+
+      - name: Verify Coverage Files Exist
+        run: |
+          ls -la coverage.xml 2>/dev/null || echo "coverage.xml not found"
+          ls -la htmlcov/ 2>/dev/null || echo "htmlcov/ not found"
 
       # - name: Upload coverage to Codecov
       #   uses: codecov/codecov-action@v4
@@ -62,7 +67,11 @@ jobs:
 
       - name: Upload Test Artifacts (Optional)
         uses: actions/upload-artifact@v4
+        if: always()  # Upload even if tests fail
         with:
-          name: coverage-report-${{ matrix.python-version }}
-          path: htmlcov/
+          name: coverage-$${{ matrix.python-version }}-$${{ github.sha }}
+          path: |
+            coverage.xml
+            htmlcov/
           retention-days: 7
+          if-no-files-found: warn
