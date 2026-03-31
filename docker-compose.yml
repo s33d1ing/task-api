@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # The main application
+  app:
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - FLASK_DEBUG=0
+    # Mount source code for live reloading during development (optional)
+    # Remove this volume mount for production deployments
+    volumes:
+      - ./app:/app/app:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/tasks"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Service to run tests inside the container
+  test:
+    build:
+      context: .
+      dockerfile: dockerfile
+    command: pytest --cov=app --cov-report=xml --cov-report=term-missing
+    volumes:
+      - ./app:/app/app
+      - ./tests:/app/tests
+      - ./pyproject.toml:/app/pyproject.toml
+    depends_on:
+      - app

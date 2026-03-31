@@ -1,0 +1,36 @@
+{
+    "name": "Task API Dev",
+    "build": {
+        "dockerfile": "../dockerfile",
+        "context": ".."
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+        "ghcr.io/devcontainers/features/git:1": {}
+    },
+    "forwardPorts": [
+        5000
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "ms-python.black-formatter",
+                "ms-python.flake8",
+                "ms-python.mypy-type-checker",
+                "ms-vscode-remote.remote-containers"
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/opt/venv/bin/python",
+                "python.linting.enabled": true,
+                "python.linting.flake8Enabled": true,
+                "python.linting.mypyEnabled": true,
+                "editor.formatOnSave": true,
+                "editor.defaultFormatter": "ms-python.black-formatter"
+            }
+        }
+    },
+    "postCreateCommand": "pip install -e '.[dev]'",
+    "remoteUser": "appuser"
+}
